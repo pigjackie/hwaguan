@@ -63,9 +63,20 @@
     }
 
     .login-sub {
-      margin: 0 0 24px 0;
+      margin: 0 0 22px 0;
       color: var(--muted);
       font-size: 13px;
+    }
+
+    .login-hint {
+      margin-top: 14px;
+      padding: 10px 12px;
+      background: var(--gold-soft);
+      border: 1px solid #E5C878;
+      border-radius: 4px;
+      font-size: 12px;
+      color: var(--navy);
+      line-height: 1.6;
     }
 
     .topbar {
@@ -90,8 +101,9 @@
     .user-meta {
       display: flex;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       font-size: 13px;
+      flex-wrap: wrap;
     }
 
     .role-badge {
@@ -183,7 +195,6 @@
     }
 
     input[type="text"],
-    input[type="email"],
     input[type="password"],
     input[type="date"],
     input[type="number"],
@@ -217,6 +228,11 @@
 
     .btn:hover {
       background: #EEF2F7;
+    }
+
+    .btn:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
     }
 
     .btn-primary {
@@ -382,6 +398,39 @@
       margin-bottom: 0;
       min-width: 135px;
     }
+
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(18, 37, 66, 0.72);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+      padding: 20px;
+    }
+
+    .modal-card {
+      width: 100%;
+      max-width: 440px;
+      background: #FFFFFF;
+      border-top: 5px solid var(--gold);
+      border-radius: 6px;
+      padding: 26px 26px 22px 26px;
+      box-shadow: 0 20px 44px rgba(0, 0, 0, 0.35);
+    }
+
+    .modal-title {
+      margin: 0 0 6px 0;
+      font-size: 18px;
+      color: var(--navy);
+    }
+
+    .modal-desc {
+      margin: 0 0 16px 0;
+      font-size: 13px;
+      color: var(--muted);
+    }
   </style>
 </head>
 <body>
@@ -393,18 +442,22 @@
       <p class="login-sub">收據開立與帳務稽核系統（臺北市補教合規版）</p>
       <form id="login-form">
         <div class="field">
-          <label for="login-email">管理帳號（Email）</label>
-          <input type="email" id="login-email" required placeholder="請輸入班務管理信箱" />
+          <label for="login-username">管理帳號</label>
+          <input type="text" id="login-username" required autocomplete="username" placeholder="請輸入 REY、ERIC 或 YAN" />
         </div>
         <div class="field">
           <label for="login-password">登入密碼</label>
-          <input type="password" id="login-password" required placeholder="請輸入密碼" />
+          <input type="password" id="login-password" required autocomplete="current-password" placeholder="初次登入預設密碼為 0000" />
         </div>
-        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 11px;">
+        <button type="submit" id="btn-login-submit" class="btn btn-primary" style="width: 100%; margin-top: 8px; padding: 11px;">
           安全登入系統
         </button>
         <div id="login-msg" class="notice err hidden"></div>
       </form>
+      <div class="login-hint">
+        預設授權帳號：REY（負責人）、ERIC（班主任）、YAN（學務長）。<br />
+        初次登入預設密碼為 0000，系統將於進入後引導您設定專屬密碼並即時同步至 Firebase。
+      </div>
     </div>
   </div>
 
@@ -415,6 +468,7 @@
       <div class="user-meta">
         <span id="display-user"></span>
         <span id="display-role" class="role-badge"></span>
+        <button id="btn-open-pwd-modal" class="btn btn-sm btn-gold">修改密碼</button>
         <button id="btn-logout" class="btn btn-sm">登出</button>
       </div>
     </header>
@@ -659,7 +713,7 @@
 
       <!-- 分頁五：班務與法規設定 -->
       <section id="tab-settings" class="card hidden">
-        <h2 class="section-title">補習班立案資料與臺北市退費規定設定（僅限 owner 修改）</h2>
+        <h2 class="section-title">補習班立案資料與臺北市退費規定設定（僅限 REY 修改）</h2>
         <form id="settings-form">
           <div class="grid-2">
             <div class="field">
@@ -697,14 +751,46 @@
     </main>
   </div>
 
+  <!-- 修改密碼彈窗（初次登入自動跳出，亦可隨時由右上角開啟） -->
+  <div id="pwd-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <h3 id="pwd-modal-title" class="modal-title">修改登入密碼</h3>
+      <p id="pwd-modal-desc" class="modal-desc"></p>
+      <form id="pwd-form">
+        <div id="old-pwd-wrap" class="field">
+          <label for="pwd-old">目前密碼</label>
+          <input type="password" id="pwd-old" autocomplete="current-password" placeholder="請輸入目前使用的密碼" />
+        </div>
+        <div class="field">
+          <label for="pwd-new">新密碼（至少 4 碼，建議 6 碼以上）</label>
+          <input type="password" id="pwd-new" required autocomplete="new-password" placeholder="請輸入新密碼" />
+        </div>
+        <div class="field">
+          <label for="pwd-confirm">確認新密碼</label>
+          <input type="password" id="pwd-confirm" required autocomplete="new-password" placeholder="請再次輸入新密碼" />
+        </div>
+        <div class="btn-row">
+          <button type="submit" id="btn-pwd-save" class="btn btn-primary">確認更新並同步 Firebase</button>
+          <button type="button" id="btn-pwd-cancel" class="btn">稍後再改</button>
+        </div>
+        <div id="pwd-msg" class="notice err hidden"></div>
+      </form>
+    </div>
+  </div>
+
   <script type="module">
-    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
     import {
       getAuth,
       signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
       signOut,
-      onAuthStateChanged
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+      onAuthStateChanged,
+      updatePassword,
+      EmailAuthProvider,
+      reauthenticateWithCredential
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
     import {
       getFirestore,
       doc,
@@ -717,21 +803,67 @@
       getDocs,
       runTransaction,
       addDoc
-    } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
 
-    // 請替換為你的 Firebase 專案設定值（於 Firebase Console 專案設定中取得）
     const firebaseConfig = {
-      apiKey: "請填入_API_KEY",
-      authDomain: "請填入_PROJECT_ID.firebaseapp.com",
-      projectId: "請填入_PROJECT_ID",
-      storageBucket: "請填入_PROJECT_ID.appspot.com",
-      messagingSenderId: "請填入_SENDER_ID",
-      appId: "請填入_APP_ID"
+      apiKey: "AIzaSyDtI5yBO9WcUeEFRvBSrmnGOfUjx4KW71A",
+      authDomain: "hwaguan-3d443.firebaseapp.com",
+      projectId: "hwaguan-3d443",
+      storageBucket: "hwaguan-3d443.firebasestorage.app",
+      messagingSenderId: "715454208444",
+      appId: "1:715454208444:web:47c8b94d19fbcf67dff3b9",
+      measurementId: "G-VMJBM03T1X"
     };
 
     const app = initializeApp(firebaseConfig);
+    try {
+      getAnalytics(app);
+    } catch (analyticsErr) {
+      // 瀏覽器阻擋追蹤或本機開啟時略過分析初始化，不影響帳務功能
+    }
+
     const auth = getAuth(app);
     const db = getFirestore(app);
+
+    // 預設三組授權帳號設定
+    const PRESET_ACCOUNTS = {
+      REY: {
+        username: "REY",
+        email: "rey@hwaguan.internal",
+        name: "宋維",
+        role: "owner"
+      },
+      ERIC: {
+        username: "ERIC",
+        email: "eric@hwaguan.internal",
+        name: "Eric",
+        role: "admin"
+      },
+      YAN: {
+        username: "YAN",
+        email: "yan@hwaguan.internal",
+        name: "宋彥",
+        role: "admin"
+      }
+    };
+
+    const DEFAULT_RAW_PASSWORD = "0000";
+    // Firebase Auth 要求密碼至少 6 碼，前端自動補固定前綴以相容四碼預設密碼
+    const AUTH_PWD_PREFIX = "HG2026#";
+
+    function toFirebasePassword(rawPwd) {
+      return AUTH_PWD_PREFIX + String(rawPwd || "");
+    }
+
+    function findPresetByEmail(email) {
+      const target = String(email || "").toLowerCase();
+      for (const key of Object.keys(PRESET_ACCOUNTS)) {
+        if (PRESET_ACCOUNTS[key].email === target) {
+          return PRESET_ACCOUNTS[key];
+        }
+      }
+      return null;
+    }
 
     const DEFAULT_SETTINGS = {
       school_name: "臺北市私立華冠文理短期補習班",
@@ -753,6 +885,7 @@
     let filteredReceiptsCache = [];
     let allLogsCache = [];
     let batchParsedRecords = [];
+    let pwdModalMode = "normal";
 
     function $(id) {
       return document.getElementById(id);
@@ -860,6 +993,109 @@
       el.classList.remove("hidden", "err");
       if (isErr) el.classList.add("err");
     }
+
+    // ---------------- 修改密碼彈窗控制 ----------------
+    function openPasswordModal(isFirstLogin) {
+      pwdModalMode = isFirstLogin ? "first" : "normal";
+      $("pwd-form").reset();
+      $("pwd-msg").classList.add("hidden");
+
+      if (isFirstLogin) {
+        $("pwd-modal-title").textContent = "初次登入：請修改預設密碼";
+        $("pwd-modal-desc").textContent =
+          `歡迎 ${currentUserProfile.name}（${currentUserProfile.username}）！目前使用預設密碼 0000，建議立即更換為您的專屬密碼並同步至 Firebase。`;
+        $("old-pwd-wrap").classList.add("hidden");
+        $("pwd-old").required = false;
+        $("btn-pwd-cancel").textContent = "本次先略過";
+      } else {
+        $("pwd-modal-title").textContent = "修改登入密碼";
+        $("pwd-modal-desc").textContent =
+          `帳號：${currentUserProfile.username}（${currentUserProfile.name}）。修改後將即時更新 Firebase 登入憑證。`;
+        $("old-pwd-wrap").classList.remove("hidden");
+        $("pwd-old").required = true;
+        $("btn-pwd-cancel").textContent = "取消";
+      }
+
+      $("pwd-modal").classList.remove("hidden");
+    }
+
+    function closePasswordModal() {
+      $("pwd-modal").classList.add("hidden");
+    }
+
+    $("btn-open-pwd-modal").addEventListener("click", () => openPasswordModal(false));
+    $("btn-pwd-cancel").addEventListener("click", closePasswordModal);
+
+    $("pwd-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("pwd-msg").classList.add("hidden");
+
+      const oldRaw = $("pwd-old").value.trim();
+      const newRaw = $("pwd-new").value.trim();
+      const confirmRaw = $("pwd-confirm").value.trim();
+
+      if (newRaw.length < 4) {
+        showMsg("pwd-msg", "新密碼長度至少須為 4 碼。", true);
+        return;
+      }
+      if (newRaw !== confirmRaw) {
+        showMsg("pwd-msg", "兩次輸入的新密碼不一致，請重新確認。", true);
+        return;
+      }
+      if (pwdModalMode === "first" && newRaw === DEFAULT_RAW_PASSWORD) {
+        showMsg("pwd-msg", "新密碼不可與預設密碼 0000 相同。", true);
+        return;
+      }
+
+      const saveBtn = $("btn-pwd-save");
+      saveBtn.disabled = true;
+
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("尚未登入。");
+
+        if (pwdModalMode === "normal") {
+          if (!oldRaw) {
+            throw new Error("請輸入目前密碼。");
+          }
+          const credential = EmailAuthProvider.credential(
+            user.email,
+            toFirebasePassword(oldRaw)
+          );
+          await reauthenticateWithCredential(user, credential);
+        }
+
+        await updatePassword(user, toFirebasePassword(newRaw));
+        const nowStr = nowTimestamp();
+        await updateDoc(doc(db, "users", user.uid), {
+          must_change_password: false,
+          password_updated_at: nowStr
+        });
+
+        await addDoc(collection(db, "audit_logs"), {
+          serial_no: "SYSTEM",
+          action: "修改密碼",
+          operator: `${currentUserProfile.name}（${currentUserProfile.username}）`,
+          detail: pwdModalMode === "first" ? "完成初次登入預設密碼變更" : "主動變更登入密碼",
+          timestamp: nowStr
+        });
+
+        currentUserProfile.must_change_password = false;
+        closePasswordModal();
+        fetchAllLogs();
+        alert("密碼已成功更新並同步至 Firebase，下次登入請使用新密碼。");
+      } catch (err) {
+        let msg = "密碼更新失敗：" + err.message;
+        if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+          msg = "目前密碼輸入錯誤，請重新確認。";
+        } else if (err.code === "auth/requires-recent-login") {
+          msg = "登入時間過久，請先登出後重新登入再修改密碼。";
+        }
+        showMsg("pwd-msg", msg, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
 
     // ---------------- Word (.doc) 兩聯式產生器 ----------------
     function buildCopyHtml(receipt, copyLabel) {
@@ -1640,7 +1876,7 @@
     $("settings-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       if (!currentUserProfile || currentUserProfile.role !== "owner") {
-        showMsg("settings-msg", "權限不足：僅限 owner（負責人）修改立案資料與退費條文。", true);
+        showMsg("settings-msg", "權限不足：僅限 REY（負責人）修改立案資料與退費條文。", true);
         return;
       }
       const nextSettings = {
@@ -1674,22 +1910,57 @@
       });
     });
 
-    // ---------------- 認證流程 ----------------
+    // ---------------- 預設帳號登入與初次啟用流程 ----------------
     $("login-form").addEventListener("submit", async (e) => {
       e.preventDefault();
       $("login-msg").classList.add("hidden");
+
+      const rawUser = $("login-username").value.trim().toUpperCase();
+      const rawPwd = $("login-password").value.trim();
+      const preset = PRESET_ACCOUNTS[rawUser];
+
+      if (!preset) {
+        showMsg("login-msg", "查無此管理帳號，僅授權 REY、ERIC、YAN 登入。", true);
+        return;
+      }
+
+      const submitBtn = $("btn-login-submit");
+      submitBtn.disabled = true;
+
       try {
         await signInWithEmailAndPassword(
           auth,
-          $("login-email").value.trim(),
-          $("login-password").value
+          preset.email,
+          toFirebasePassword(rawPwd)
         );
-      } catch (err) {
-        showMsg("login-msg", "登入失敗：帳號或密碼錯誤，或尚未開通權限。", true);
+      } catch (signInErr) {
+        // 若使用者以預設密碼 0000 首次登入，且 Firebase Auth 尚未建立該帳號，自動完成初次啟用
+        if (rawPwd === DEFAULT_RAW_PASSWORD) {
+          try {
+            await createUserWithEmailAndPassword(
+              auth,
+              preset.email,
+              toFirebasePassword(DEFAULT_RAW_PASSWORD)
+            );
+          } catch (createErr) {
+            if (createErr.code === "auth/email-already-in-use") {
+              showMsg("login-msg", "密碼錯誤（此帳號已完成啟用並修改過密碼，請輸入新密碼）。", true);
+            } else if (createErr.code === "auth/operation-not-allowed") {
+              showMsg("login-msg", "Firebase 後台尚未啟用「電子郵件／密碼」登入方式，請先至 Authentication 開啟。", true);
+            } else {
+              showMsg("login-msg", "帳號初次啟用失敗：" + createErr.message, true);
+            }
+          }
+        } else {
+          showMsg("login-msg", "帳號或密碼錯誤，請重新確認。", true);
+        }
+      } finally {
+        submitBtn.disabled = false;
       }
     });
 
     $("btn-logout").addEventListener("click", async () => {
+      closePasswordModal();
       await signOut(auth);
     });
 
@@ -1702,21 +1973,52 @@
       }
 
       try {
-        const userSnap = await getDoc(doc(db, "users", user.uid));
-        if (!userSnap.exists() || userSnap.data().active !== true) {
+        const preset = findPresetByEmail(user.email);
+        if (!preset) {
           await signOut(auth);
-          showMsg("login-msg", "此帳號尚未在資料庫 users 集合中啟用權限，請聯繫負責人。", true);
+          showMsg("login-msg", "非授權管理帳號，已拒絕存取。", true);
           return;
         }
 
-        currentUserProfile = userSnap.data();
+        const userRef = doc(db, "users", user.uid);
+        let userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          const nowStr = nowTimestamp();
+          const initialProfile = {
+            username: preset.username,
+            name: preset.name,
+            role: preset.role,
+            active: true,
+            must_change_password: true,
+            created_at: nowStr,
+            password_updated_at: ""
+          };
+          await setDoc(userRef, initialProfile);
+          await addDoc(collection(db, "audit_logs"), {
+            serial_no: "SYSTEM",
+            action: "帳號啟用",
+            operator: `${preset.name}（${preset.username}）`,
+            detail: "首次以預設密碼登入並建立權限檔案",
+            timestamp: nowStr
+          });
+          currentUserProfile = initialProfile;
+        } else {
+          const data = userSnap.data();
+          if (data.active !== true) {
+            await signOut(auth);
+            showMsg("login-msg", "此帳號已被停用，請聯繫負責人。", true);
+            return;
+          }
+          currentUserProfile = data;
+        }
+
         const roleLabels = {
           owner: "負責人（全權限）",
-          admin: "管理主管（查帳／退費／作廢）",
-          staff: "行政人員（開立／查詢）"
+          admin: "管理主管（開立／查帳／退費／作廢）"
         };
 
-        $("display-user").textContent = `${currentUserProfile.name}（${user.email}）`;
+        $("display-user").textContent = `${currentUserProfile.name}（${currentUserProfile.username}）`;
         $("display-role").textContent = roleLabels[currentUserProfile.role] || currentUserProfile.role;
         $("btn-save-settings").disabled = currentUserProfile.role !== "owner";
 
@@ -1730,30 +2032,15 @@
 
         $("login-view").classList.add("hidden");
         $("app-view").classList.remove("hidden");
+
+        if (currentUserProfile.must_change_password === true) {
+          openPasswordModal(true);
+        }
       } catch (err) {
         await signOut(auth);
-        showMsg("login-msg", "讀取權限失敗：" + err.message, true);
+        showMsg("login-msg", "初始化權限或讀取資料庫失敗：" + err.message, true);
       }
     });
   </script>
 </body>
 </html>
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
-  import { getAuth } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyDtI5yBO9NcUeEFRvBSzmnGOFUjx4KN71A",
-    authDomain: "hwaguan-3d443.firebaseapp.com",
-    projectId: "hwaguan-3d443",
-    storageBucket: "hwaguan-3d443.firebasestorage.app",
-    messagingSenderId: "715454208444",
-    appId: "1:715454208444:web:47c8b94d19fbcf67dff3b9",
-    measurementId: "G-VMJBM83T1X"
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const analytics = getAnalytics(app);
-  const auth = getAuth(app);
-</script>
