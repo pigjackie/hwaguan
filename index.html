@@ -639,4 +639,1858 @@
           </div>
           <div class="field">
             <label for="f-end">迄日</label>
-            <input type="date" id="f-
+            <input type="date" id="f-end" />
+          </div>
+          <div class="field">
+            <label for="f-status">單據狀態</label>
+            <select id="f-status">
+              <option value="全部">全部</option>
+              <option value="正常">正常</option>
+              <option value="已退費">已退費</option>
+              <option value="已作廢">已作廢</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="f-method">繳費方式</label>
+            <select id="f-method">
+              <option value="全部">全部</option>
+              <option value="現金">現金</option>
+              <option value="匯款轉帳">匯款轉帳</option>
+              <option value="刷卡">刷卡</option>
+              <option value="行動支付">行動支付</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="field" style="flex: 1; min-width: 170px;">
+            <label for="f-kw">關鍵字（編號／姓名／課程／經手人）</label>
+            <input type="text" id="f-kw" placeholder="輸入關鍵字篩選" />
+          </div>
+          <button type="button" id="btn-refresh-audit" class="btn btn-primary">重新查詢</button>
+          <button type="button" id="btn-all-dates" class="btn">全部期間</button>
+          <button type="button" id="btn-export-audit" class="btn btn-gold">匯出查帳總帳 CSV</button>
+        </div>
+
+        <div class="kpi-bar">
+          <div class="kpi-card">
+            <div class="kpi-label">查詢筆數（正常／退費／作廢）</div>
+            <div id="kpi-count" class="kpi-val">0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">現金實收淨額</div>
+            <div id="kpi-cash" class="kpi-val">NT$ 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">匯款轉帳淨額</div>
+            <div id="kpi-transfer" class="kpi-val">NT$ 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">退費總額</div>
+            <div id="kpi-refund" class="kpi-val">NT$ 0</div>
+          </div>
+          <div class="kpi-card">
+            <div class="kpi-label">實收淨額合計</div>
+            <div id="kpi-net" class="kpi-val">NT$ 0</div>
+          </div>
+        </div>
+
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>流水編號</th>
+                <th>開立日期</th>
+                <th>狀態</th>
+                <th>學生姓名</th>
+                <th>班別課程</th>
+                <th>實收金額</th>
+                <th>退費金額</th>
+                <th>實收淨額</th>
+                <th>繳費方式</th>
+                <th>經手人</th>
+                <th>備註／異動原因</th>
+                <th>操作</th>
+              </tr>
+            </thead>
+            <tbody id="audit-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 分頁四：異動稽核日誌 -->
+      <section id="tab-logs" class="card hidden">
+        <h2 class="section-title">異動稽核日誌（資料庫規則鎖定只進不出，不可刪除）</h2>
+        <div class="btn-row" style="margin-top: 0; margin-bottom: 12px;">
+          <button type="button" id="btn-refresh-logs" class="btn btn-primary">重新整理日誌</button>
+          <button type="button" id="btn-export-logs" class="btn btn-gold">匯出稽核日誌 CSV</button>
+        </div>
+        <div class="table-wrap">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>時間戳記</th>
+                <th>收據流水編號</th>
+                <th>操作動作</th>
+                <th>操作人</th>
+                <th>異動明細</th>
+              </tr>
+            </thead>
+            <tbody id="logs-tbody"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- 分頁五：班務與法規設定 -->
+      <section id="tab-settings" class="card hidden">
+        <h2 class="section-title">補習班立案資料與臺北市退費規定設定（僅限 REY 修改）</h2>
+        <form id="settings-form">
+          <div class="grid-2">
+            <div class="field">
+              <label for="set-name">補習班立案全銜</label>
+              <input type="text" id="set-name" required />
+            </div>
+            <div class="field">
+              <label for="set-reg">核准立案字號</label>
+              <input type="text" id="set-reg" required />
+            </div>
+            <div class="field">
+              <label for="set-addr">立案班址</label>
+              <input type="text" id="set-addr" required />
+            </div>
+            <div class="field">
+              <label for="set-phone">聯絡電話</label>
+              <input type="text" id="set-phone" required />
+            </div>
+            <div class="field">
+              <label for="set-prefix">流水編號前綴（例：HG）</label>
+              <input type="text" id="set-prefix" required />
+            </div>
+          </div>
+          <div class="field" style="margin-top: 8px;">
+            <label for="set-policy">臺北市短期補習班退費規定全文（正式啟用前請依臺北市法規查詢系統最新公告核對）</label>
+            <textarea id="set-policy" rows="6" required></textarea>
+          </div>
+          <div class="btn-row">
+            <button type="submit" id="btn-save-settings" class="btn btn-primary">儲存並同步全站設定</button>
+          </div>
+          <div id="settings-msg" class="notice hidden"></div>
+        </form>
+
+        <!-- REY 專屬：每月流水號計數器手動校正 -->
+        <div id="owner-counter-box" class="owner-panel hidden">
+          <h2 class="section-title">REY 專屬：每月流水號計數器手動校正</h2>
+          <p style="margin: 0 0 12px 0; font-size: 13px; color: #64748B;">
+            若刪除最新一筆測試單後欲重用該流水編號，或欲對齊既有紙本號碼，可在此手動校正各月份計數值。設為 0 時，該月下一張收據將從 0001 開始。
+          </p>
+          <div class="filter-row">
+            <div class="field">
+              <label for="cnt-yyyymm">年月（YYYYMM）</label>
+              <input type="text" id="cnt-yyyymm" maxlength="6" placeholder="例：202611" />
+            </div>
+            <button type="button" id="btn-load-counter" class="btn">查詢目前計數</button>
+            <div class="field">
+              <label for="cnt-seq">目前最後已用序號（非負整數）</label>
+              <input type="number" id="cnt-seq" min="0" value="0" />
+            </div>
+            <button type="button" id="btn-save-counter" class="btn btn-gold">寫入新計數值</button>
+          </div>
+          <div id="counter-msg" class="notice hidden"></div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- 修改密碼彈窗 -->
+  <div id="pwd-modal" class="modal-backdrop hidden">
+    <div class="modal-card">
+      <h3 id="pwd-modal-title" class="modal-title">修改登入密碼</h3>
+      <p id="pwd-modal-desc" class="modal-desc"></p>
+      <form id="pwd-form">
+        <div id="old-pwd-wrap" class="field">
+          <label for="pwd-old">目前密碼</label>
+          <input type="password" id="pwd-old" autocomplete="current-password" placeholder="請輸入目前使用的密碼" />
+        </div>
+        <div class="field">
+          <label for="pwd-new">新密碼（至少 4 碼，建議 6 碼以上）</label>
+          <input type="password" id="pwd-new" required autocomplete="new-password" placeholder="請輸入新密碼" />
+        </div>
+        <div class="field">
+          <label for="pwd-confirm">確認新密碼</label>
+          <input type="password" id="pwd-confirm" required autocomplete="new-password" placeholder="請再次輸入新密碼" />
+        </div>
+        <div class="btn-row">
+          <button type="submit" id="btn-pwd-save" class="btn btn-primary">確認更新並同步 Firebase</button>
+          <button type="button" id="btn-pwd-cancel" class="btn">稍後再改</button>
+        </div>
+        <div id="pwd-msg" class="notice err hidden"></div>
+      </form>
+    </div>
+  </div>
+
+  <!-- REY 專屬：單據手動調整彈窗 -->
+  <div id="edit-modal" class="modal-backdrop hidden">
+    <div class="modal-card wide">
+      <h3 id="edit-modal-title" class="modal-title">REY 手動調整單據</h3>
+      <p class="modal-desc">所有異動明細將自動記錄於異動稽核日誌，並即時同步更新至帳務資料庫。</p>
+      <form id="edit-form">
+        <input type="hidden" id="e-serial" />
+        <div class="grid-3">
+          <div class="field">
+            <label for="e-date">開立／繳費日期</label>
+            <input type="date" id="e-date" required />
+          </div>
+          <div class="field">
+            <label for="e-name">學生姓名</label>
+            <input type="text" id="e-name" required />
+          </div>
+          <div class="field">
+            <label for="e-sid">學號</label>
+            <input type="text" id="e-sid" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="e-grade">學校／年級</label>
+            <input type="text" id="e-grade" />
+          </div>
+          <div class="field">
+            <label for="e-course">班別／課程名稱</label>
+            <input type="text" id="e-course" required />
+          </div>
+          <div class="field">
+            <label for="e-period">修業起訖期間</label>
+            <input type="text" id="e-period" />
+          </div>
+        </div>
+
+        <div class="grid-4">
+          <div class="field">
+            <label for="e-tuition">學費</label>
+            <input type="number" id="e-tuition" min="0" required />
+          </div>
+          <div class="field">
+            <label for="e-material">講義教材費</label>
+            <input type="number" id="e-material" min="0" required />
+          </div>
+          <div class="field">
+            <label for="e-misc">代辦其他費</label>
+            <input type="number" id="e-misc" min="0" required />
+          </div>
+          <div class="field">
+            <label for="e-discount">優惠折抵</label>
+            <input type="number" id="e-discount" min="0" required />
+          </div>
+        </div>
+
+        <div class="preview-box" style="margin: 8px 0 12px 0; padding: 10px 14px;">
+          <div id="e-preview-num" class="preview-num" style="font-size: 16px;">調整後實收總金額：NT$ 0</div>
+          <div id="e-preview-zh" class="preview-zh" style="font-size: 13px;">國字大寫：新臺幣零元整</div>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="e-method">繳費方式</label>
+            <select id="e-method">
+              <option value="現金">現金</option>
+              <option value="匯款轉帳">匯款轉帳</option>
+              <option value="刷卡">刷卡</option>
+              <option value="行動支付">行動支付</option>
+              <option value="其他">其他</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="e-handler">經手人</label>
+            <input type="text" id="e-handler" required />
+          </div>
+          <div class="field">
+            <label for="e-note">繳費備註</label>
+            <input type="text" id="e-note" />
+          </div>
+        </div>
+
+        <div class="grid-3">
+          <div class="field">
+            <label for="e-status">單據狀態</label>
+            <select id="e-status">
+              <option value="正常">正常</option>
+              <option value="已退費">已退費</option>
+              <option value="已作廢">已作廢</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="e-refund">退費金額（狀態為已退費時生效）</label>
+            <input type="number" id="e-refund" min="0" value="0" required />
+          </div>
+          <div class="field">
+            <label for="e-status-reason">作廢或退費說明</label>
+            <input type="text" id="e-status-reason" />
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="e-log-reason">本次手動調整原因（必填，將寫入稽核日誌）</label>
+          <input type="text" id="e-log-reason" required placeholder="例：修正誤植學費金額、還原誤作廢單據" />
+        </div>
+
+        <div class="btn-row">
+          <button type="submit" id="btn-edit-save" class="btn btn-primary">確認儲存調整</button>
+          <button type="button" id="btn-edit-cancel" class="btn">取消</button>
+        </div>
+        <div id="edit-msg" class="notice err hidden"></div>
+      </form>
+    </div>
+  </div>
+
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
+    import {
+      getAuth,
+      signInWithEmailAndPassword,
+      createUserWithEmailAndPassword,
+      signOut,
+      onAuthStateChanged,
+      updatePassword,
+      EmailAuthProvider,
+      reauthenticateWithCredential
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
+    import {
+      getFirestore,
+      doc,
+      getDoc,
+      setDoc,
+      updateDoc,
+      deleteDoc,
+      collection,
+      query,
+      orderBy,
+      getDocs,
+      runTransaction,
+      addDoc
+    } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-firestore.js";
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDtI5yBO9WcUeEFRvBSrmnGOfUjx4KW71A",
+      authDomain: "hwaguan-3d443.firebaseapp.com",
+      projectId: "hwaguan-3d443",
+      storageBucket: "hwaguan-3d443.firebasestorage.app",
+      messagingSenderId: "715454208444",
+      appId: "1:715454208444:web:47c8b94d19fbcf67dff3b9",
+      measurementId: "G-VMJBM03T1X"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    const PRESET_ACCOUNTS = {
+      REY: {
+        username: "REY",
+        email: "rey@hwaguan.internal",
+        name: "宋維",
+        role: "owner"
+      },
+      ERIC: {
+        username: "ERIC",
+        email: "eric@hwaguan.internal",
+        name: "Eric",
+        role: "admin"
+      },
+      YAN: {
+        username: "YAN",
+        email: "yan@hwaguan.internal",
+        name: "宋彥",
+        role: "admin"
+      }
+    };
+
+    const DEFAULT_RAW_PASSWORD = "0000";
+    const AUTH_PWD_PREFIX = "HG2026#";
+
+    function toFirebasePassword(rawPwd) {
+      return AUTH_PWD_PREFIX + String(rawPwd || "");
+    }
+
+    function findPresetByEmail(email) {
+      const target = String(email || "").toLowerCase();
+      for (const key of Object.keys(PRESET_ACCOUNTS)) {
+        if (PRESET_ACCOUNTS[key].email === target) {
+          return PRESET_ACCOUNTS[key];
+        }
+      }
+      return null;
+    }
+
+    const DEFAULT_SETTINGS = {
+      school_name: "臺北市私立華冠文理短期補習班",
+      reg_no: "北市補習班證字第（請填入立案字號）號",
+      address: "臺北市松山區（請填入正式立案地址）",
+      phone: "02-（請填入班內電話）",
+      serial_prefix: "HG",
+      refund_policy:
+        "依臺北市短期補習班管理規則第33條規定辦理退費（實際條文請依臺北市政府最新公告為準）：\n" +
+        "1. 實際開課日前提出退費申請者，退還當期開班約定繳納費用總額90%；但所收取之10%部分逾新臺幣1,000元者，超過部分仍應退還。\n" +
+        "2. 實際開課日起，且未逾全期（或總課程時數）三分之一期間內提出退費申請者，退還當期開班約定繳納費用總額之50%。\n" +
+        "3. 實際開課期間已逾全期（或總課程時數）三分之一者，所收取之當期費用得全數不予退還。\n" +
+        "4. 因可歸責於補習班之事由致未能開班者，應全額退費；代辦費應全額退還，但已購置成品者，發給成品。"
+    };
+
+    let currentUserProfile = null;
+    let schoolSettings = { ...DEFAULT_SETTINGS };
+    let allReceiptsCache = [];
+    let filteredReceiptsCache = [];
+    let allLogsCache = [];
+    let batchParsedRecords = [];
+    let pwdModalMode = "normal";
+    let editingOriginalReceipt = null;
+
+    function $(id) {
+      return document.getElementById(id);
+    }
+
+    function isOwnerUser() {
+      return Boolean(currentUserProfile && currentUserProfile.role === "owner");
+    }
+
+    function todayISO() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      const day = String(d.getDate()).padStart(2, "0");
+      return `${y}-${m}-${day}`;
+    }
+
+    function currentYYYYMM() {
+      const d = new Date();
+      return `${d.getFullYear()}${String(d.getMonth() + 1).padStart(2, "0")}`;
+    }
+
+    function firstOfMonthISO() {
+      const d = new Date();
+      const y = d.getFullYear();
+      const m = String(d.getMonth() + 1).padStart(2, "0");
+      return `${y}-${m}-01`;
+    }
+
+    function nowTimestamp() {
+      const d = new Date();
+      const pad = (n) => String(n).padStart(2, "0");
+      return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+    }
+
+    function safeInt(val) {
+      const cleaned = String(val === undefined || val === null ? "" : val).replace(/,/g, "").trim();
+      if (cleaned === "") return 0;
+      const n = Number(cleaned);
+      if (!Number.isFinite(n)) throw new Error("數值格式不正確");
+      return Math.round(n);
+    }
+
+    function escapeHtml(str) {
+      return String(str === undefined || str === null ? "" : str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#39;");
+    }
+
+    function numberToChineseCurrency(amount) {
+      if (amount < 0) return "金額異常";
+      if (amount === 0) return "新臺幣零元整";
+
+      const digits = ["零", "壹", "貳", "參", "肆", "伍", "陸", "柒", "捌", "玖"];
+      const smallUnits = ["", "拾", "佰", "仟"];
+      const bigUnits = ["", "萬", "億", "兆"];
+      const divisors = [1000, 100, 10, 1];
+
+      function convertFour(num) {
+        let out = "";
+        let zeroPending = false;
+        for (let i = 0; i < 4; i++) {
+          const d = Math.floor(num / divisors[i]) % 10;
+          const unitIdx = 3 - i;
+          if (d === 0) {
+            if (out.length > 0) zeroPending = true;
+          } else {
+            if (zeroPending) {
+              out += "零";
+              zeroPending = false;
+            }
+            out += digits[d] + smallUnits[unitIdx];
+          }
+        }
+        return out;
+      }
+
+      const sections = [];
+      let temp = amount;
+      while (temp > 0) {
+        sections.push(temp % 10000);
+        temp = Math.floor(temp / 10000);
+      }
+
+      let result = "";
+      let hasHigher = false;
+      let needZero = false;
+      for (let i = sections.length - 1; i >= 0; i--) {
+        const sec = sections[i];
+        if (sec === 0) {
+          if (hasHigher) needZero = true;
+        } else {
+          if (hasHigher && (needZero || sec < 1000)) {
+            result += "零";
+          }
+          result += convertFour(sec) + bigUnits[i];
+          hasHigher = true;
+          needZero = false;
+        }
+      }
+      return "新臺幣" + result + "元整";
+    }
+
+    function formatMoney(n) {
+      return Number(n || 0).toLocaleString("zh-TW");
+    }
+
+    function showMsg(elId, text, isErr = false) {
+      const el = $(elId);
+      el.textContent = text;
+      el.classList.remove("hidden", "err");
+      if (isErr) el.classList.add("err");
+    }
+
+    // 修改密碼彈窗控制
+    function openPasswordModal(isFirstLogin) {
+      pwdModalMode = isFirstLogin ? "first" : "normal";
+      $("pwd-form").reset();
+      $("pwd-msg").classList.add("hidden");
+
+      if (isFirstLogin) {
+        $("pwd-modal-title").textContent = "初次登入：請修改預設密碼";
+        $("pwd-modal-desc").textContent =
+          `歡迎 ${currentUserProfile.name}（${currentUserProfile.username}）！目前使用預設密碼 0000，建議立即更換為您的專屬密碼並同步至 Firebase。`;
+        $("old-pwd-wrap").classList.add("hidden");
+        $("pwd-old").required = false;
+        $("btn-pwd-cancel").textContent = "本次先略過";
+      } else {
+        $("pwd-modal-title").textContent = "修改登入密碼";
+        $("pwd-modal-desc").textContent =
+          `帳號：${currentUserProfile.username}（${currentUserProfile.name}）。修改後將即時更新 Firebase 登入憑證。`;
+        $("old-pwd-wrap").classList.remove("hidden");
+        $("pwd-old").required = true;
+        $("btn-pwd-cancel").textContent = "取消";
+      }
+
+      $("pwd-modal").classList.remove("hidden");
+    }
+
+    function closePasswordModal() {
+      $("pwd-modal").classList.add("hidden");
+    }
+
+    $("btn-open-pwd-modal").addEventListener("click", () => openPasswordModal(false));
+    $("btn-pwd-cancel").addEventListener("click", closePasswordModal);
+
+    $("pwd-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("pwd-msg").classList.add("hidden");
+
+      const oldRaw = $("pwd-old").value.trim();
+      const newRaw = $("pwd-new").value.trim();
+      const confirmRaw = $("pwd-confirm").value.trim();
+
+      if (newRaw.length < 4) {
+        showMsg("pwd-msg", "新密碼長度至少須為 4 碼。", true);
+        return;
+      }
+      if (newRaw !== confirmRaw) {
+        showMsg("pwd-msg", "兩次輸入的新密碼不一致，請重新確認。", true);
+        return;
+      }
+      if (pwdModalMode === "first" && newRaw === DEFAULT_RAW_PASSWORD) {
+        showMsg("pwd-msg", "新密碼不可與預設密碼 0000 相同。", true);
+        return;
+      }
+
+      const saveBtn = $("btn-pwd-save");
+      saveBtn.disabled = true;
+
+      try {
+        const user = auth.currentUser;
+        if (!user) throw new Error("尚未登入。");
+
+        if (pwdModalMode === "normal") {
+          if (!oldRaw) throw new Error("請輸入目前密碼。");
+          const credential = EmailAuthProvider.credential(
+            user.email,
+            toFirebasePassword(oldRaw)
+          );
+          await reauthenticateWithCredential(user, credential);
+        }
+
+        await updatePassword(user, toFirebasePassword(newRaw));
+        const nowStr = nowTimestamp();
+        await updateDoc(doc(db, "users", user.uid), {
+          must_change_password: false,
+          password_updated_at: nowStr
+        });
+
+        await addDoc(collection(db, "audit_logs"), {
+          serial_no: "SYSTEM",
+          action: "修改密碼",
+          operator: `${currentUserProfile.name}（${currentUserProfile.username}）`,
+          detail: pwdModalMode === "first" ? "完成初次登入預設密碼變更" : "主動變更登入密碼",
+          timestamp: nowStr
+        });
+
+        currentUserProfile.must_change_password = false;
+        closePasswordModal();
+        fetchAllLogs();
+        alert("密碼已成功更新並同步至 Firebase，下次登入請使用新密碼。");
+      } catch (err) {
+        let msg = `密碼更新失敗（${err.code || err.message}）`;
+        if (err.code === "auth/invalid-credential" || err.code === "auth/wrong-password") {
+          msg = "目前密碼輸入錯誤，請重新確認。";
+        } else if (err.code === "auth/requires-recent-login") {
+          msg = "登入時間過久，請先登出後重新登入再修改密碼。";
+        }
+        showMsg("pwd-msg", msg, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // REY 專屬：單據手動調整彈窗
+    function updateEditPreview() {
+      try {
+        const total =
+          safeInt($("e-tuition").value) +
+          safeInt($("e-material").value) +
+          safeInt($("e-misc").value) -
+          safeInt($("e-discount").value);
+        if (total < 0) {
+          $("e-preview-num").textContent = "調整後實收總金額：異常（折抵大於費用）";
+          $("e-preview-zh").textContent = "國字大寫：請檢查金額";
+        } else {
+          $("e-preview-num").textContent = `調整後實收總金額：NT$ ${formatMoney(total)}`;
+          $("e-preview-zh").textContent = `國字大寫：${numberToChineseCurrency(total)}`;
+        }
+      } catch (err) {
+        $("e-preview-num").textContent = "調整後實收總金額：請輸入純數字";
+      }
+    }
+
+    ["e-tuition", "e-material", "e-misc", "e-discount"].forEach((id) => {
+      $(id).addEventListener("input", updateEditPreview);
+    });
+
+    function openEditModal(rec) {
+      if (!isOwnerUser()) {
+        alert("權限不足：僅限 REY 可手動調整單據。");
+        return;
+      }
+      editingOriginalReceipt = { ...rec };
+      $("edit-msg").classList.add("hidden");
+      $("edit-modal-title").textContent = `REY 手動調整單據：${rec.serial_no}`;
+      $("e-serial").value = rec.serial_no;
+      $("e-date").value = rec.issue_date || todayISO();
+      $("e-name").value = rec.student_name || "";
+      $("e-sid").value = rec.student_id || "";
+      $("e-grade").value = rec.grade_school || "";
+      $("e-course").value = rec.course_name || "";
+      $("e-period").value = rec.course_period || "";
+      $("e-tuition").value = Number(rec.tuition_fee || 0);
+      $("e-material").value = Number(rec.material_fee || 0);
+      $("e-misc").value = Number(rec.misc_fee || 0);
+      $("e-discount").value = Number(rec.discount || 0);
+      $("e-method").value = rec.payment_method || "現金";
+      $("e-handler").value = rec.handler || "";
+      $("e-note").value = rec.payment_note || "";
+      $("e-status").value = rec.status || "正常";
+      $("e-refund").value = Number(rec.refund_amount || 0);
+      $("e-status-reason").value = rec.status_reason || "";
+      $("e-log-reason").value = "";
+      updateEditPreview();
+      $("edit-modal").classList.remove("hidden");
+    }
+
+    function closeEditModal() {
+      editingOriginalReceipt = null;
+      $("edit-modal").classList.add("hidden");
+    }
+
+    $("btn-edit-cancel").addEventListener("click", closeEditModal);
+
+    $("edit-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isOwnerUser() || !editingOriginalReceipt) return;
+      $("edit-msg").classList.add("hidden");
+
+      const saveBtn = $("btn-edit-save");
+      saveBtn.disabled = true;
+
+      try {
+        const sn = $("e-serial").value;
+        const tuition = safeInt($("e-tuition").value);
+        const material = safeInt($("e-material").value);
+        const misc = safeInt($("e-misc").value);
+        const discount = safeInt($("e-discount").value);
+        const total = tuition + material + misc - discount;
+        if (tuition < 0 || material < 0 || misc < 0 || discount < 0) {
+          throw new Error("各項費用與折抵不可為負數。");
+        }
+        if (total < 0) {
+          throw new Error("實收總金額不可小於 0。");
+        }
+
+        const nextStatus = $("e-status").value;
+        let nextRefund = safeInt($("e-refund").value);
+        if (nextStatus !== "已退費") {
+          nextRefund = 0;
+        } else if (nextRefund <= 0 || nextRefund > total) {
+          throw new Error("狀態為「已退費」時，退費金額須大於 0 且不超過實收總金額。");
+        }
+
+        const logReason = $("e-log-reason").value.trim();
+        if (!logReason) {
+          throw new Error("請填寫本次手動調整原因。");
+        }
+
+        const nowStr = nowTimestamp();
+        const updatedFields = {
+          issue_date: $("e-date").value,
+          student_name: $("e-name").value.trim(),
+          student_id: $("e-sid").value.trim(),
+          grade_school: $("e-grade").value.trim(),
+          course_name: $("e-course").value.trim(),
+          course_period: $("e-period").value.trim(),
+          tuition_fee: tuition,
+          material_fee: material,
+          misc_fee: misc,
+          discount: discount,
+          total_amount: total,
+          payment_method: $("e-method").value,
+          payment_note: $("e-note").value.trim(),
+          handler: $("e-handler").value.trim(),
+          status: nextStatus,
+          refund_amount: nextRefund,
+          status_reason: $("e-status-reason").value.trim(),
+          updated_at: nowStr
+        };
+
+        const fieldLabels = {
+          issue_date: "日期",
+          student_name: "姓名",
+          course_name: "課程",
+          tuition_fee: "學費",
+          material_fee: "教材費",
+          misc_fee: "代辦費",
+          discount: "折抵",
+          total_amount: "實收",
+          payment_method: "方式",
+          handler: "經手人",
+          status: "狀態",
+          refund_amount: "退費"
+        };
+
+        const diffs = [];
+        for (const k of Object.keys(fieldLabels)) {
+          const oldVal = editingOriginalReceipt[k];
+          const newVal = updatedFields[k];
+          if (String(oldVal) !== String(newVal)) {
+            diffs.push(`${fieldLabels[k]}：${oldVal}→${newVal}`);
+          }
+        }
+        const diffSummary = diffs.length > 0 ? diffs.join("；") : "更新備註或附屬欄位";
+
+        await updateDoc(doc(db, "receipts", sn), updatedFields);
+        await addDoc(collection(db, "audit_logs"), {
+          serial_no: sn,
+          action: "手動調整",
+          operator: `${currentUserProfile.name}（${currentUserProfile.username}）`,
+          detail: `原因：${logReason}｜異動：${diffSummary}`,
+          timestamp: nowStr
+        });
+
+        closeEditModal();
+        await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+        alert(`單據 ${sn} 已手動調整完成並寫入稽核日誌。`);
+      } catch (err) {
+        showMsg("edit-msg", "儲存調整失敗：" + err.message, true);
+      } finally {
+        saveBtn.disabled = false;
+      }
+    });
+
+    // Word (.doc) 兩聯式產生器
+    function buildCopyHtml(receipt, copyLabel) {
+      const s = schoolSettings;
+      let statusTag = "";
+      if (receipt.status === "已作廢") {
+        statusTag = " 【已作廢 VOID】";
+      } else if (receipt.status === "已退費") {
+        statusTag = ` 【已退費 NT$${formatMoney(receipt.refund_amount)}】`;
+      }
+
+      const studentStr = receipt.student_id
+        ? `${receipt.student_name}（學號：${receipt.student_id}）`
+        : receipt.student_name;
+      const payStr = receipt.payment_note
+        ? `${receipt.payment_method}（${receipt.payment_note}）`
+        : receipt.payment_method;
+      const discountStr = receipt.discount > 0 ? `- NT$ ${formatMoney(receipt.discount)}` : "NT$ 0";
+      const policyHtml = escapeHtml(s.refund_policy).replace(/\n/g, "<br/>");
+      const serialColor = receipt.status === "已作廢" ? "#B41E1E" : "#1B365D";
+
+      return `
+        <table style="width:100%; border-collapse:collapse; border:1.2pt solid #1B365D; font-family:'微軟正黑體',sans-serif; font-size:9pt; color:#1E1E1E; table-layout:fixed;">
+          <colgroup>
+            <col style="width:18%;" />
+            <col style="width:32%;" />
+            <col style="width:18%;" />
+            <col style="width:32%;" />
+          </colgroup>
+          <tr>
+            <td colspan="4" style="background:#1B365D; color:#FFFFFF; font-size:11.5pt; font-weight:bold; text-align:center; padding:5pt; border:1pt solid #1B365D;">
+              ${escapeHtml(s.school_name)} 繳費收據 【${escapeHtml(copyLabel)}】${escapeHtml(statusTag)}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:#F4F6F9; color:#1B365D; font-size:7.8pt; text-align:center; padding:3.5pt; border:0.6pt solid #1B365D;">
+              立案字號：${escapeHtml(s.reg_no)} ｜ 電話：${escapeHtml(s.phone)} ｜ 班址：${escapeHtml(s.address)}
+            </td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">收據流水編號</td>
+            <td style="font-weight:bold; color:${serialColor}; font-size:10pt; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(receipt.serial_no)}</td>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">開立／繳費日期</td>
+            <td style="padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(receipt.issue_date)}</td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">學生姓名</td>
+            <td style="font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(studentStr)}</td>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">學校／年級</td>
+            <td style="padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(receipt.grade_school || "—")}</td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">班別／課程名稱</td>
+            <td style="font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(receipt.course_name)}</td>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">修業起訖期間</td>
+            <td style="padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(receipt.course_period || "—")}</td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">學費</td>
+            <td style="text-align:right; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">NT$ ${formatMoney(receipt.tuition_fee)}</td>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">講義／教材費</td>
+            <td style="text-align:right; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">NT$ ${formatMoney(receipt.material_fee)}</td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">代辦／其他費</td>
+            <td style="text-align:right; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">NT$ ${formatMoney(receipt.misc_fee)}</td>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">優惠折抵</td>
+            <td style="text-align:right; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${discountStr}</td>
+          </tr>
+          <tr>
+            <td style="background:#F4F6F9; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">繳費方式／備註</td>
+            <td style="font-size:8.5pt; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">${escapeHtml(payStr)}</td>
+            <td style="background:#FDF8EC; color:#1B365D; font-weight:bold; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">實收總金額</td>
+            <td style="background:#FDF8EC; color:#1B365D; font-weight:bold; font-size:10.5pt; text-align:right; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">NT$ ${formatMoney(receipt.total_amount)}</td>
+          </tr>
+          <tr>
+            <td colspan="4" style="background:#FDF8EC; color:#1B365D; font-weight:bold; font-size:9.2pt; padding:3.5pt 5pt; border:0.6pt solid #1B365D;">
+              實收金額（國字大寫）：${numberToChineseCurrency(receipt.total_amount)}
+            </td>
+          </tr>
+          <tr>
+            <td colspan="4" style="font-size:7pt; line-height:1.25; padding:4pt 5pt; border:0.6pt solid #1B365D;">
+              <b>【臺北市短期補習班退費規定】</b><br/>${policyHtml}
+            </td>
+          </tr>
+          <tr>
+            <td style="height:28pt; vertical-align:top; font-size:8.2pt; font-weight:bold; padding:4pt 5pt; border:0.6pt solid #1B365D;">補習班印章：</td>
+            <td style="height:28pt; vertical-align:top; font-size:8.2pt; font-weight:bold; padding:4pt 5pt; border:0.6pt solid #1B365D;">班主任核章：</td>
+            <td style="height:28pt; vertical-align:top; font-size:8.2pt; font-weight:bold; padding:4pt 5pt; border:0.6pt solid #1B365D;">經手人：${escapeHtml(receipt.handler)}</td>
+            <td style="height:28pt; vertical-align:top; font-size:8.2pt; font-weight:bold; padding:4pt 5pt; border:0.6pt solid #1B365D;">家長／學生簽收：</td>
+          </tr>
+        </table>
+      `;
+    }
+
+    function buildWordDocumentHtml(receiptsList) {
+      const cutLine =
+        '<p style="text-align:center; font-size:7.5pt; color:#777777; margin:7pt 0;">' +
+        "---------------------------------------- 裁切線（上聯收執／下聯存根） ----------------------------------------" +
+        "</p>";
+
+      const pagesHtml = receiptsList
+        .map((rec, idx) => {
+          const pageBreak =
+            idx > 0 ? '<br clear="all" style="page-break-before:always;" />' : "";
+          return (
+            pageBreak +
+            buildCopyHtml(rec, "第一聯：收執聯") +
+            cutLine +
+            buildCopyHtml(rec, "第二聯：存根聯")
+          );
+        })
+        .join("\n");
+
+      return `
+        <html xmlns:o="urn:schemas-microsoft-com:office:office"
+              xmlns:w="urn:schemas-microsoft-com:office:word"
+              xmlns="http://www.w3.org/TR/REC-html40">
+        <head>
+          <meta charset="utf-8" />
+          <title>華冠文理補習班收據</title>
+          <!--[if gte mso 9]>
+          <xml>
+            <w:WordDocument>
+              <w:View>Print</w:View>
+              <w:Zoom>100</w:Zoom>
+              <w:DoNotOptimizeForBrowser/>
+            </w:WordDocument>
+          </xml>
+          <![endif]-->
+          <style>
+            @page Section1 {
+              size: 21.0cm 29.7cm;
+              margin: 0.7cm 1.4cm 0.7cm 1.4cm;
+            }
+            div.Section1 {
+              page: Section1;
+            }
+          </style>
+        </head>
+        <body>
+          <div class="Section1">${pagesHtml}</div>
+        </body>
+        </html>
+      `;
+    }
+
+    function downloadWordFile(receiptsList, filename) {
+      const htmlContent = buildWordDocumentHtml(receiptsList);
+      const blob = new Blob(["\ufeff", htmlContent], {
+        type: "application/msword;charset=utf-8"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    function printReceiptsInBrowser(receiptsList) {
+      const win = window.open("", "_blank");
+      if (!win) {
+        alert("請允許瀏覽器開啟彈出視窗以進行列印。");
+        return;
+      }
+      win.document.write(buildWordDocumentHtml(receiptsList));
+      win.document.close();
+      win.focus();
+      setTimeout(() => win.print(), 300);
+    }
+
+    // CSV 解析與匯出
+    function parseCsvText(text) {
+      const clean = text.replace(/^\uFEFF/, "");
+      const rows = [];
+      let row = [];
+      let field = "";
+      let inQuotes = false;
+
+      for (let i = 0; i < clean.length; i++) {
+        const ch = clean[i];
+        const next = clean[i + 1];
+        if (inQuotes) {
+          if (ch === '"' && next === '"') {
+            field += '"';
+            i++;
+          } else if (ch === '"') {
+            inQuotes = false;
+          } else {
+            field += ch;
+          }
+        } else {
+          if (ch === '"') {
+            inQuotes = true;
+          } else if (ch === ",") {
+            row.push(field.trim());
+            field = "";
+          } else if (ch === "\r" && next === "\n") {
+            row.push(field.trim());
+            rows.push(row);
+            row = [];
+            field = "";
+            i++;
+          } else if (ch === "\n") {
+            row.push(field.trim());
+            rows.push(row);
+            row = [];
+            field = "";
+          } else {
+            field += ch;
+          }
+        }
+      }
+      if (field.length > 0 || row.length > 0) {
+        row.push(field.trim());
+        rows.push(row);
+      }
+      return rows.filter((r) => r.some((cell) => cell !== ""));
+    }
+
+    function downloadCsv(headers, rows, filename) {
+      const esc = (v) => {
+        const s = String(v === undefined || v === null ? "" : v);
+        if (s.includes(",") || s.includes('"') || s.includes("\n")) {
+          return '"' + s.replace(/"/g, '""') + '"';
+        }
+        return s;
+      };
+      const lines = [headers.map(esc).join(",")];
+      for (const r of rows) {
+        lines.push(r.map(esc).join(","));
+      }
+      const blob = new Blob(["\ufeff", lines.join("\r\n")], {
+        type: "text/csv;charset=utf-8"
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+
+    // Firestore 核心帳務交易
+    async function loadSchoolSettings() {
+      const snap = await getDoc(doc(db, "settings", "school"));
+      if (snap.exists()) {
+        schoolSettings = { ...DEFAULT_SETTINGS, ...snap.data() };
+      } else {
+        schoolSettings = { ...DEFAULT_SETTINGS };
+      }
+      $("set-name").value = schoolSettings.school_name;
+      $("set-reg").value = schoolSettings.reg_no;
+      $("set-addr").value = schoolSettings.address;
+      $("set-phone").value = schoolSettings.phone;
+      $("set-prefix").value = schoolSettings.serial_prefix;
+      $("set-policy").value = schoolSettings.refund_policy;
+    }
+
+    async function issueReceiptAtomic(record, actionLabel = "開立") {
+      const yyyymm = record.issue_date.replace(/-/g, "").slice(0, 6);
+      const prefix = (schoolSettings.serial_prefix || "HG").trim() || "HG";
+      const counterRef = doc(db, "counters", yyyymm);
+      const nowStr = nowTimestamp();
+
+      const total =
+        record.tuition_fee + record.material_fee + record.misc_fee - record.discount;
+      if (total < 0) {
+        throw new Error("實收總金額不可小於 0");
+      }
+
+      const createdReceipt = await runTransaction(db, async (tx) => {
+        const counterSnap = await tx.get(counterRef);
+        const nextSeq = counterSnap.exists() ? Number(counterSnap.data().seq || 0) + 1 : 1;
+        const serialNo = `${prefix}-${yyyymm}-${String(nextSeq).padStart(4, "0")}`;
+        const receiptRef = doc(db, "receipts", serialNo);
+        const existingSnap = await tx.get(receiptRef);
+
+        if (existingSnap.exists()) {
+          throw new Error(`流水編號 ${serialNo} 已存在，請先由 REY 至班務設定校正該月計數器。`);
+        }
+
+        const receiptObj = {
+          serial_no: serialNo,
+          issue_date: record.issue_date,
+          student_name: record.student_name,
+          student_id: record.student_id || "",
+          grade_school: record.grade_school || "",
+          course_name: record.course_name,
+          course_period: record.course_period || "",
+          tuition_fee: record.tuition_fee,
+          material_fee: record.material_fee,
+          misc_fee: record.misc_fee,
+          discount: record.discount,
+          total_amount: total,
+          payment_method: record.payment_method,
+          payment_note: record.payment_note || "",
+          handler: record.handler,
+          status: "正常",
+          refund_amount: 0,
+          status_reason: "",
+          created_at: nowStr,
+          updated_at: nowStr,
+          created_by_uid: auth.currentUser.uid,
+          created_by_name: currentUserProfile.name
+        };
+
+        tx.set(counterRef, { seq: nextSeq, updated_at: nowStr }, { merge: true });
+        tx.set(receiptRef, receiptObj);
+        tx.set(doc(collection(db, "audit_logs")), {
+          serial_no: serialNo,
+          action: actionLabel,
+          operator: `${currentUserProfile.name}（經手：${record.handler}）`,
+          detail: `學生：${record.student_name}｜課程：${record.course_name}｜實收：${total}`,
+          timestamp: nowStr
+        });
+
+        return receiptObj;
+      });
+
+      return createdReceipt;
+    }
+
+    async function fetchAllReceipts() {
+      const q = query(collection(db, "receipts"), orderBy("serial_no", "desc"));
+      const snap = await getDocs(q);
+      allReceiptsCache = snap.docs.map((d) => d.data());
+      renderAuditTable();
+    }
+
+    async function fetchAllLogs() {
+      const q = query(collection(db, "audit_logs"), orderBy("timestamp", "desc"));
+      const snap = await getDocs(q);
+      allLogsCache = snap.docs.map((d) => d.data());
+      renderLogsTable();
+    }
+
+    // 查帳篩選與渲染
+    function renderAuditTable() {
+      const start = $("f-start").value;
+      const end = $("f-end").value;
+      const status = $("f-status").value;
+      const method = $("f-method").value;
+      const kw = $("f-kw").value.trim().toLowerCase();
+
+      filteredReceiptsCache = allReceiptsCache.filter((r) => {
+        if (start && r.issue_date < start) return false;
+        if (end && r.issue_date > end) return false;
+        if (status !== "全部" && r.status !== status) return false;
+        if (method !== "全部" && r.payment_method !== method) return false;
+        if (kw) {
+          const hay = [
+            r.serial_no,
+            r.student_name,
+            r.course_name,
+            r.handler,
+            r.payment_note,
+            r.status_reason
+          ]
+            .join(" ")
+            .toLowerCase();
+          if (!hay.includes(kw)) return false;
+        }
+        return true;
+      });
+
+      let okCnt = 0;
+      let refCnt = 0;
+      let voidCnt = 0;
+      let cashNet = 0;
+      let transferNet = 0;
+      let refundSum = 0;
+      let netSum = 0;
+
+      const ownerFlag = isOwnerUser();
+      const canManage =
+        currentUserProfile &&
+        (currentUserProfile.role === "owner" || currentUserProfile.role === "admin");
+
+      const tbody = $("audit-tbody");
+      tbody.innerHTML = "";
+
+      for (const r of filteredReceiptsCache) {
+        let net = 0;
+        let statusClass = "status-ok";
+        if (r.status === "已作廢") {
+          voidCnt++;
+          net = 0;
+          statusClass = "status-void";
+        } else if (r.status === "已退費") {
+          refCnt++;
+          net = r.total_amount - r.refund_amount;
+          refundSum += r.refund_amount;
+          statusClass = "status-refund";
+        } else {
+          okCnt++;
+          net = r.total_amount;
+        }
+        netSum += net;
+
+        if (r.status !== "已作廢") {
+          if (r.payment_method === "現金") cashNet += net;
+          else if (r.payment_method === "匯款轉帳") transferNet += net;
+        }
+
+        const tr = document.createElement("tr");
+        const noteText = r.status_reason || r.payment_note || "—";
+        const snEsc = escapeHtml(r.serial_no);
+
+        const manageBtns =
+          canManage && r.status !== "已作廢"
+            ? `<button class="btn btn-sm" data-act="refund" data-sn="${snEsc}">退費</button>` +
+              `<button class="btn btn-sm" style="border-color:#B41E1E; color:#B41E1E;" data-act="void" data-sn="${snEsc}">作廢</button>`
+            : "";
+
+        const ownerBtns = ownerFlag
+          ? `<button class="btn btn-sm btn-gold" data-act="edit" data-sn="${snEsc}">手動調整</button>` +
+            `<button class="btn btn-sm btn-danger" data-act="delete" data-sn="${snEsc}">刪單</button>`
+          : "";
+
+        tr.innerHTML = `
+          <td><b>${snEsc}</b></td>
+          <td>${escapeHtml(r.issue_date)}</td>
+          <td class="${statusClass}">${escapeHtml(r.status)}</td>
+          <td>${escapeHtml(r.student_name)}</td>
+          <td>${escapeHtml(r.course_name)}</td>
+          <td>${formatMoney(r.total_amount)}</td>
+          <td>${formatMoney(r.refund_amount)}</td>
+          <td><b>${formatMoney(net)}</b></td>
+          <td>${escapeHtml(r.payment_method)}</td>
+          <td>${escapeHtml(r.handler)}</td>
+          <td style="max-width:170px; overflow:hidden; text-overflow:ellipsis;" title="${escapeHtml(noteText)}">${escapeHtml(noteText)}</td>
+          <td>
+            <div class="action-group">
+              <button class="btn btn-sm btn-primary" data-act="word" data-sn="${snEsc}">Word</button>
+              <button class="btn btn-sm" data-act="print" data-sn="${snEsc}">列印</button>
+              ${manageBtns}
+              ${ownerBtns}
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
+      }
+
+      $("kpi-count").textContent = `${filteredReceiptsCache.length}（${okCnt}/${refCnt}/${voidCnt}）`;
+      $("kpi-cash").textContent = `NT$ ${formatMoney(cashNet)}`;
+      $("kpi-transfer").textContent = `NT$ ${formatMoney(transferNet)}`;
+      $("kpi-refund").textContent = `NT$ ${formatMoney(refundSum)}`;
+      $("kpi-net").textContent = `NT$ ${formatMoney(netSum)}`;
+    }
+
+    function renderLogsTable() {
+      const tbody = $("logs-tbody");
+      tbody.innerHTML = "";
+      for (const log of allLogsCache) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td>${escapeHtml(log.timestamp)}</td>
+          <td><b>${escapeHtml(log.serial_no)}</b></td>
+          <td>${escapeHtml(log.action)}</td>
+          <td>${escapeHtml(log.operator)}</td>
+          <td style="text-align:left;">${escapeHtml(log.detail)}</td>
+        `;
+        tbody.appendChild(tr);
+      }
+    }
+
+    // 單據操作（重印／退費／作廢／手動調整／刪單）
+    $("audit-tbody").addEventListener("click", async (e) => {
+      const btn = e.target.closest("button[data-act]");
+      if (!btn) return;
+      const act = btn.dataset.act;
+      const sn = btn.dataset.sn;
+      const rec = allReceiptsCache.find((r) => r.serial_no === sn);
+      if (!rec) return;
+
+      if (act === "word") {
+        downloadWordFile([rec], `${rec.serial_no}_${rec.student_name}.doc`);
+        await addDoc(collection(db, "audit_logs"), {
+          serial_no: sn,
+          action: "重印Word",
+          operator: currentUserProfile.name,
+          detail: "重新下載 Word 收據檔",
+          timestamp: nowTimestamp()
+        });
+        fetchAllLogs();
+      } else if (act === "print") {
+        printReceiptsInBrowser([rec]);
+      } else if (act === "edit") {
+        openEditModal(rec);
+      } else if (act === "delete") {
+        if (!isOwnerUser()) {
+          alert("權限不足：僅限 REY 可執行刪單。");
+          return;
+        }
+        const reason = prompt(
+          `【永久刪單警告】即將從資料庫永久刪除 ${sn}（${rec.student_name}｜NT$ ${formatMoney(rec.total_amount)}）。\n請輸入刪單原因（必填）：`
+        );
+        if (!reason || !reason.trim()) return;
+
+        const verify = prompt(
+          `請完整輸入收據編號「${sn}」以確認永久刪除（刪除後無法復原）：`
+        );
+        if (verify === null || verify.trim() !== sn) {
+          alert("編號核對不相符，已取消刪單。");
+          return;
+        }
+
+        try {
+          const nowStr = nowTimestamp();
+          await deleteDoc(doc(db, "receipts", sn));
+          await addDoc(collection(db, "audit_logs"), {
+            serial_no: sn,
+            action: "刪單",
+            operator: `${currentUserProfile.name}（${currentUserProfile.username}）`,
+            detail: `原因：${reason.trim()}｜原單快照：${rec.issue_date}／${rec.student_name}／${rec.course_name}／實收${rec.total_amount}／狀態${rec.status}`,
+            timestamp: nowStr
+          });
+          await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+          alert(
+            `已永久刪除單據 ${sn} 並留存快照於稽核日誌。\n提醒：若此為本月最後一筆測試單且欲重用號碼，請至「班務與法規設定」下方的計數器手動校正。`
+          );
+        } catch (err) {
+          alert("刪單失敗（請確認 Firestore 規則已發布更新）：" + err.message);
+        }
+      } else if (act === "void") {
+        const reason = prompt(`即將作廢收據 ${sn}。\n請輸入作廢原因（必填）：`);
+        if (!reason || !reason.trim()) return;
+        try {
+          const nowStr = nowTimestamp();
+          await updateDoc(doc(db, "receipts", sn), {
+            status: "已作廢",
+            status_reason: reason.trim(),
+            updated_at: nowStr
+          });
+          await addDoc(collection(db, "audit_logs"), {
+            serial_no: sn,
+            action: "作廢",
+            operator: currentUserProfile.name,
+            detail: `作廢原因：${reason.trim()}`,
+            timestamp: nowStr
+          });
+          await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+          alert(`收據 ${sn} 已標記作廢並寫入稽核日誌。`);
+        } catch (err) {
+          alert("作廢失敗（請確認權限）：" + err.message);
+        }
+      } else if (act === "refund") {
+        const amtInput = prompt(
+          `收據 ${sn} 原實收 NT$ ${formatMoney(rec.total_amount)}。\n請輸入依臺北市規定核算之退費金額：`
+        );
+        if (amtInput === null) return;
+        let refundAmt = 0;
+        try {
+          refundAmt = safeInt(amtInput);
+          if (refundAmt <= 0 || refundAmt > rec.total_amount) {
+            throw new Error("退費金額必須大於 0 且不超過原實收金額");
+          }
+        } catch (err) {
+          alert(err.message);
+          return;
+        }
+        const reason = prompt("請輸入退費依據與階段（例：開課前退90%）：");
+        if (!reason || !reason.trim()) return;
+        try {
+          const nowStr = nowTimestamp();
+          await updateDoc(doc(db, "receipts", sn), {
+            status: "已退費",
+            refund_amount: refundAmt,
+            status_reason: reason.trim(),
+            updated_at: nowStr
+          });
+          await addDoc(collection(db, "audit_logs"), {
+            serial_no: sn,
+            action: "退費",
+            operator: currentUserProfile.name,
+            detail: `退費金額：${refundAmt}｜依據：${reason.trim()}`,
+            timestamp: nowStr
+          });
+          await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+          alert(`收據 ${sn} 已登記退費 NT$ ${formatMoney(refundAmt)}。`);
+        } catch (err) {
+          alert("登記退費失敗（請確認權限）：" + err.message);
+        }
+      }
+    });
+
+    // 表單事件
+    function updateSinglePreview() {
+      try {
+        const total =
+          safeInt($("s-tuition").value) +
+          safeInt($("s-material").value) +
+          safeInt($("s-misc").value) -
+          safeInt($("s-discount").value);
+        if (total < 0) {
+          $("s-preview-num").textContent = "實收總金額：異常（折抵大於費用）";
+          $("s-preview-zh").textContent = "國字大寫：請檢查金額";
+        } else {
+          $("s-preview-num").textContent = `實收總金額：NT$ ${formatMoney(total)}`;
+          $("s-preview-zh").textContent = `國字大寫：${numberToChineseCurrency(total)}`;
+        }
+      } catch (e) {
+        $("s-preview-num").textContent = "實收總金額：請輸入純數字";
+      }
+    }
+
+    ["s-tuition", "s-material", "s-misc", "s-discount"].forEach((id) => {
+      $(id).addEventListener("input", updateSinglePreview);
+    });
+
+    $("btn-clear-single").addEventListener("click", () => {
+      $("single-form").reset();
+      $("s-date").value = todayISO();
+      $("s-handler").value = currentUserProfile ? currentUserProfile.name : "";
+      updateSinglePreview();
+    });
+
+    $("single-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const btn = $("btn-create-single");
+      btn.disabled = true;
+      try {
+        const record = {
+          issue_date: $("s-date").value,
+          student_name: $("s-name").value.trim(),
+          student_id: $("s-sid").value.trim(),
+          grade_school: $("s-grade").value.trim(),
+          course_name: $("s-course").value.trim(),
+          course_period: $("s-period").value.trim(),
+          tuition_fee: safeInt($("s-tuition").value),
+          material_fee: safeInt($("s-material").value),
+          misc_fee: safeInt($("s-misc").value),
+          discount: safeInt($("s-discount").value),
+          payment_method: $("s-method").value,
+          payment_note: $("s-note").value.trim(),
+          handler: $("s-handler").value.trim()
+        };
+        const created = await issueReceiptAtomic(record, "開立");
+        downloadWordFile([created], `${created.serial_no}_${created.student_name}.doc`);
+        showMsg("single-msg", `開立成功！已鎖定連號 ${created.serial_no} 並自動下載 Word 收據。`);
+        $("single-form").reset();
+        $("s-date").value = todayISO();
+        $("s-handler").value = currentUserProfile.name;
+        updateSinglePreview();
+        await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+      } catch (err) {
+        showMsg("single-msg", "開立失敗：" + err.message, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // 批次匯入事件
+    $("btn-download-tpl").addEventListener("click", () => {
+      const headers = [
+        "學生姓名", "學號", "學校年級", "班別課程", "修業期間",
+        "學費", "講義教材費", "代辦費", "優惠折抵",
+        "繳費方式", "繳費備註", "經手人", "繳費日期"
+      ];
+      const samples = [
+        ["王小明", "HG115001", "敦化國中 八年級", "國八國文精修班", "2026/11/01 至 2027/01/31（共12堂）", 12000, 800, 0, 1000, "匯款轉帳", "後五碼12345；獎學金折抵", "Eric", todayISO()],
+        ["林雅婷", "HG115002", "介壽國中 九年級", "國九會考國英全修班", "2026/11/01 至 2027/01/31（共24堂）", 22000, 1500, 0, 0, "現金", "", "宋彥", todayISO()]
+      ];
+      downloadCsv(headers, samples, "華冠學生收費匯入範本.csv");
+    });
+
+    $("batch-file-input").addEventListener("change", (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = () => {
+        const rows = parseCsvText(String(reader.result || ""));
+        if (rows.length < 2) {
+          showMsg("batch-status", "檔案中沒有學生資料列。", true);
+          return;
+        }
+        const headers = rows[0];
+        const parsed = [];
+        const errors = [];
+        let sum = 0;
+
+        for (let i = 1; i < rows.length; i++) {
+          const obj = {};
+          headers.forEach((h, idx) => {
+            obj[h] = rows[i][idx] || "";
+          });
+          const name = (obj["學生姓名"] || "").trim();
+          const course = (obj["班別課程"] || "").trim();
+          if (!name || !course) {
+            errors.push(`第 ${i + 1} 列缺少學生姓名或班別課程`);
+            continue;
+          }
+          try {
+            const tuition = safeInt(obj["學費"]);
+            const material = safeInt(obj["講義教材費"]);
+            const misc = safeInt(obj["代辦費"]);
+            const discount = safeInt(obj["優惠折抵"]);
+            const total = tuition + material + misc - discount;
+            if (total < 0) throw new Error("實收金額小於 0");
+            const dateVal = (obj["繳費日期"] || todayISO()).replace(/\//g, "-");
+            parsed.push({
+              student_name: name,
+              student_id: (obj["學號"] || "").trim(),
+              grade_school: (obj["學校年級"] || "").trim(),
+              course_name: course,
+              course_period: (obj["修業期間"] || "").trim(),
+              tuition_fee: tuition,
+              material_fee: material,
+              misc_fee: misc,
+              discount: discount,
+              total_amount: total,
+              payment_method: (obj["繳費方式"] || "現金").trim() || "現金",
+              payment_note: (obj["繳費備註"] || "").trim(),
+              handler: (obj["經手人"] || currentUserProfile.name).trim(),
+              issue_date: dateVal
+            });
+            sum += total;
+          } catch (err) {
+            errors.push(`第 ${i + 1} 列（${name}）：${err.message}`);
+          }
+        }
+
+        batchParsedRecords = parsed;
+        const tbody = $("batch-tbody");
+        tbody.innerHTML = "";
+        parsed.forEach((r, idx) => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${idx + 1}</td>
+            <td>${escapeHtml(r.student_name)}</td>
+            <td>${escapeHtml(r.grade_school)}</td>
+            <td>${escapeHtml(r.course_name)}</td>
+            <td>${escapeHtml(r.course_period)}</td>
+            <td>NT$ ${formatMoney(r.total_amount)}</td>
+            <td>${escapeHtml(r.payment_method)}</td>
+            <td>${escapeHtml(r.handler)}</td>
+            <td>${escapeHtml(r.issue_date)}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        const errMsg = errors.length > 0 ? `｜略過異常 ${errors.length} 筆：${errors.slice(0, 3).join("；")}` : "";
+        showMsg("batch-status", `已載入 ${parsed.length} 筆有效名單，預計入帳總額 NT$ ${formatMoney(sum)}${errMsg}`, errors.length > 0 && parsed.length === 0);
+      };
+      reader.readAsText(file, "utf-8");
+      e.target.value = "";
+    });
+
+    $("btn-run-batch").addEventListener("click", async () => {
+      if (batchParsedRecords.length === 0) {
+        alert("請先載入有效的學生 CSV 名單。");
+        return;
+      }
+      if (!confirm(`即將為 ${batchParsedRecords.length} 筆資料依序配發正式流水編號並寫入帳務資料庫，是否確定？`)) {
+        return;
+      }
+      const btn = $("btn-run-batch");
+      btn.disabled = true;
+      const createdList = [];
+      try {
+        for (const rec of batchParsedRecords) {
+          const created = await issueReceiptAtomic(rec, "批次匯入");
+          createdList.push(created);
+        }
+        downloadWordFile(createdList, `華冠批次收據_${todayISO().replace(/-/g, "")}.doc`);
+        showMsg(
+          "batch-status",
+          `批次入帳完成！共開立 ${createdList.length} 張（${createdList[0].serial_no} 至 ${createdList[createdList.length - 1].serial_no}），已自動下載合併 Word 檔。`
+        );
+        batchParsedRecords = [];
+        $("batch-tbody").innerHTML = "";
+        await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+      } catch (err) {
+        showMsg("batch-status", `批次中斷（已完成 ${createdList.length} 筆）：${err.message}`, true);
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    // 篩選與匯出事件
+    ["f-start", "f-end", "f-status", "f-method", "f-kw"].forEach((id) => {
+      $(id).addEventListener("input", renderAuditTable);
+    });
+
+    $("btn-refresh-audit").addEventListener("click", fetchAllReceipts);
+    $("btn-refresh-logs").addEventListener("click", fetchAllLogs);
+
+    $("btn-all-dates").addEventListener("click", () => {
+      $("f-start").value = "";
+      $("f-end").value = "";
+      $("f-status").value = "全部";
+      $("f-method").value = "全部";
+      $("f-kw").value = "";
+      renderAuditTable();
+    });
+
+    $("btn-export-audit").addEventListener("click", () => {
+      const headers = [
+        "流水編號", "開立日期", "狀態", "學生姓名", "學號", "學校年級",
+        "班別課程", "修業期間", "學費", "講義教材費", "代辦費", "優惠折抵",
+        "實收金額", "退費金額", "實收淨額", "繳費方式", "繳費備註", "經手人",
+        "作廢或退費原因", "建立時間"
+      ];
+      const rows = filteredReceiptsCache.map((r) => {
+        const net = r.status === "已作廢" ? 0 : r.total_amount - r.refund_amount;
+        return [
+          r.serial_no, r.issue_date, r.status, r.student_name, r.student_id,
+          r.grade_school, r.course_name, r.course_period, r.tuition_fee,
+          r.material_fee, r.misc_fee, r.discount, r.total_amount,
+          r.refund_amount, net, r.payment_method, r.payment_note, r.handler,
+          r.status_reason, r.created_at
+        ];
+      });
+      downloadCsv(headers, rows, `華冠查帳明細_${todayISO().replace(/-/g, "")}.csv`);
+    });
+
+    $("btn-export-logs").addEventListener("click", () => {
+      const headers = ["時間戳記", "流水編號", "操作動作", "操作人", "異動明細"];
+      const rows = allLogsCache.map((l) => [
+        l.timestamp, l.serial_no, l.action, l.operator, l.detail
+      ]);
+      downloadCsv(headers, rows, `華冠異動稽核日誌_${todayISO().replace(/-/g, "")}.csv`);
+    });
+
+    // 設定儲存與 REY 流水號計數器校正
+    $("settings-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      if (!isOwnerUser()) {
+        showMsg("settings-msg", "權限不足：僅限 REY（負責人）修改立案資料與退費條文。", true);
+        return;
+      }
+      const nextSettings = {
+        school_name: $("set-name").value.trim(),
+        reg_no: $("set-reg").value.trim(),
+        address: $("set-addr").value.trim(),
+        phone: $("set-phone").value.trim(),
+        serial_prefix: $("set-prefix").value.trim() || "HG",
+        refund_policy: $("set-policy").value.trim(),
+        updated_at: nowTimestamp(),
+        updated_by: currentUserProfile.name
+      };
+      try {
+        await setDoc(doc(db, "settings", "school"), nextSettings, { merge: true });
+        schoolSettings = nextSettings;
+        showMsg("settings-msg", "班務設定與退費規定已更新，所有裝置將立即同步套用。");
+      } catch (err) {
+        showMsg("settings-msg", "儲存失敗：" + err.message, true);
+      }
+    });
+
+    $("btn-load-counter").addEventListener("click", async () => {
+      if (!isOwnerUser()) return;
+      const yyyymm = $("cnt-yyyymm").value.trim();
+      if (!/^\d{6}$/.test(yyyymm)) {
+        showMsg("counter-msg", "請輸入 6 碼年月，例如 202611。", true);
+        return;
+      }
+      try {
+        const snap = await getDoc(doc(db, "counters", yyyymm));
+        const seq = snap.exists() ? Number(snap.data().seq || 0) : 0;
+        $("cnt-seq").value = seq;
+        const prefix = (schoolSettings.serial_prefix || "HG").trim() || "HG";
+        const nextStr = `${prefix}-${yyyymm}-${String(seq + 1).padStart(4, "0")}`;
+        showMsg("counter-msg", `${yyyymm} 目前計數為 ${seq}，下一張收據將配發：${nextStr}`);
+      } catch (err) {
+        showMsg("counter-msg", "查詢失敗：" + err.message, true);
+      }
+    });
+
+    $("btn-save-counter").addEventListener("click", async () => {
+      if (!isOwnerUser()) return;
+      const yyyymm = $("cnt-yyyymm").value.trim();
+      if (!/^\d{6}$/.test(yyyymm)) {
+        showMsg("counter-msg", "請輸入 6 碼年月，例如 202611。", true);
+        return;
+      }
+      let nextSeq = 0;
+      try {
+        nextSeq = safeInt($("cnt-seq").value);
+        if (nextSeq < 0) throw new Error("計數值不可小於 0。");
+      } catch (err) {
+        showMsg("counter-msg", err.message, true);
+        return;
+      }
+
+      const prefix = (schoolSettings.serial_prefix || "HG").trim() || "HG";
+      const nextPreview = `${prefix}-${yyyymm}-${String(nextSeq + 1).padStart(4, "0")}`;
+      if (!confirm(`確定將 ${yyyymm} 計數器調整為 ${nextSeq}（下一張將開立 ${nextPreview}）？`)) {
+        return;
+      }
+
+      try {
+        const nowStr = nowTimestamp();
+        await setDoc(
+          doc(db, "counters", yyyymm),
+          { seq: nextSeq, updated_at: nowStr, updated_by: currentUserProfile.username },
+          { merge: true }
+        );
+        await addDoc(collection(db, "audit_logs"), {
+          serial_no: `CNT-${yyyymm}`,
+          action: "調整流水號",
+          operator: `${currentUserProfile.name}（${currentUserProfile.username}）`,
+          detail: `手動將 ${yyyymm} 計數器設為 ${nextSeq}（下張將為 ${nextPreview}）`,
+          timestamp: nowStr
+        });
+        fetchAllLogs();
+        showMsg("counter-msg", `已更新！${yyyymm} 下一張開立之收據編號將為：${nextPreview}`);
+      } catch (err) {
+        showMsg("counter-msg", "寫入失敗（請確認 Firestore 規則已發布）：" + err.message, true);
+      }
+    });
+
+    // 分頁切換
+    document.querySelectorAll(".tab-btn").forEach((btn) => {
+      btn.addEventListener("click", () => {
+        document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+        btn.classList.add("active");
+        const target = btn.dataset.tab;
+        ["single", "batch", "audit", "logs", "settings"].forEach((name) => {
+          $("tab-" + name).classList.toggle("hidden", name !== target);
+        });
+      });
+    });
+
+    // 預設帳號登入與初次啟用流程
+    $("login-form").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("login-msg").classList.add("hidden");
+
+      const rawUser = $("login-username").value.trim().toUpperCase();
+      const rawPwd = $("login-password").value.trim();
+      const preset = PRESET_ACCOUNTS[rawUser];
+
+      if (!preset) {
+        showMsg("login-msg", "查無此管理帳號，僅授權 REY、ERIC、YAN 登入。", true);
+        return;
+      }
+
+      const submitBtn = $("btn-login-submit");
+      submitBtn.disabled = true;
+
+      try {
+        await signInWithEmailAndPassword(
+          auth,
+          preset.email,
+          toFirebasePassword(rawPwd)
+        );
+      } catch (signInErr) {
+        if (signInErr.code === "auth/operation-not-allowed") {
+          showMsg("login-msg", "Firebase 後台尚未啟用「電子郵件／密碼」登入方式（auth/operation-not-allowed）。", true);
+        } else if (signInErr.code === "auth/unauthorized-domain") {
+          showMsg("login-msg", "此網址網域尚未加入 Firebase Authentication 的「已授權網域」（auth/unauthorized-domain）。", true);
+        } else if (rawPwd === DEFAULT_RAW_PASSWORD) {
+          try {
+            await createUserWithEmailAndPassword(
+              auth,
+              preset.email,
+              toFirebasePassword(DEFAULT_RAW_PASSWORD)
+            );
+          } catch (createErr) {
+            if (createErr.code === "auth/email-already-in-use") {
+              showMsg("login-msg", "密碼錯誤（此帳號已存在於 Firebase，請輸入修改後的新密碼，或至 Firebase Auth 刪除該帳號後重試 0000）。", true);
+            } else if (createErr.code === "auth/operation-not-allowed") {
+              showMsg("login-msg", "Firebase 後台尚未啟用「電子郵件／密碼」登入方式（auth/operation-not-allowed）。", true);
+            } else {
+              showMsg("login-msg", `帳號初次啟用失敗（${createErr.code || createErr.message}）`, true);
+            }
+          }
+        } else {
+          showMsg("login-msg", `帳號或密碼錯誤（${signInErr.code || signInErr.message}）`, true);
+        }
+      } finally {
+        submitBtn.disabled = false;
+      }
+    });
+
+    $("btn-logout").addEventListener("click", async () => {
+      closePasswordModal();
+      closeEditModal();
+      await signOut(auth);
+    });
+
+    onAuthStateChanged(auth, async (user) => {
+      if (!user) {
+        currentUserProfile = null;
+        $("app-view").classList.add("hidden");
+        $("login-view").classList.remove("hidden");
+        return;
+      }
+
+      try {
+        const preset = findPresetByEmail(user.email);
+        if (!preset) {
+          await signOut(auth);
+          showMsg("login-msg", "非授權管理帳號，已拒絕存取。", true);
+          return;
+        }
+
+        const userRef = doc(db, "users", user.uid);
+        let userSnap = await getDoc(userRef);
+
+        if (!userSnap.exists()) {
+          const nowStr = nowTimestamp();
+          const initialProfile = {
+            username: preset.username,
+            name: preset.name,
+            role: preset.role,
+            active: true,
+            must_change_password: true,
+            created_at: nowStr,
+            password_updated_at: ""
+          };
+          await setDoc(userRef, initialProfile);
+          await addDoc(collection(db, "audit_logs"), {
+            serial_no: "SYSTEM",
+            action: "帳號啟用",
+            operator: `${preset.name}（${preset.username}）`,
+            detail: "首次以預設密碼登入並建立權限檔案",
+            timestamp: nowStr
+          });
+          currentUserProfile = initialProfile;
+        } else {
+          const data = userSnap.data();
+          if (data.active !== true) {
+            await signOut(auth);
+            showMsg("login-msg", "此帳號已被停用，請聯繫負責人。", true);
+            return;
+          }
+          currentUserProfile = data;
+        }
+
+        const roleLabels = {
+          owner: "負責人（全權限：含手動調整／刪單）",
+          admin: "管理主管（開立／查帳／退費／作廢）"
+        };
+
+        $("display-user").textContent = `${currentUserProfile.name}（${currentUserProfile.username}）`;
+        $("display-role").textContent = roleLabels[currentUserProfile.role] || currentUserProfile.role;
+
+        const ownerFlag = isOwnerUser();
+        $("btn-save-settings").disabled = !ownerFlag;
+        $("owner-counter-box").classList.toggle("hidden", !ownerFlag);
+        $("cnt-yyyymm").value = currentYYYYMM();
+
+        $("s-date").value = todayISO();
+        $("s-handler").value = currentUserProfile.name;
+        $("f-start").value = firstOfMonthISO();
+        $("f-end").value = todayISO();
+
+        await loadSchoolSettings();
+        await Promise.all([fetchAllReceipts(), fetchAllLogs()]);
+
+        $("login-view").classList.add("hidden");
+        $("app-view").classList.remove("hidden");
+
+        if (currentUserProfile.must_change_password === true) {
+          openPasswordModal(true);
+        }
+      } catch (err) {
+        await signOut(auth);
+        showMsg("login-msg", `初始化權限或讀取資料庫失敗（${err.code || err.message}）`, true);
+      }
+    });
+  </script>
+</body>
+</html>
