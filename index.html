@@ -1739,25 +1739,21 @@
 </body>
 </html>
 <script type="module">
-  // Import the functions you need from the SDKs you need
   import { initializeApp } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-app.js";
   import { getAnalytics } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
+  import { getAuth } from "https://www.gstatic.com/firebasejs/13.4.0/firebase-auth.js";
 
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    apiKey: "AIzaSyDtI5yBO9WcUeEFRvBSrmnGOfUjx4KW71A",
+    apiKey: "AIzaSyDiItyBO9NcmEFBv8SrmnGOFUjx4KN71A",
     authDomain: "hwaguan-3d443.firebaseapp.com",
     projectId: "hwaguan-3d443",
     storageBucket: "hwaguan-3d443.firebasestorage.app",
     messagingSenderId: "715454208444",
     appId: "1:715454208444:web:47c8b94d19fbcf67dff3b9",
-    measurementId: "G-VMJBM03T1X"
+    measurementId: "G-V9CNBNGT1X"
   };
 
-  // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
+  const auth = getAuth(app);
 </script>
